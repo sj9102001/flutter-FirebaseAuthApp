@@ -30,14 +30,13 @@ class _LoginPageState extends State<LoginPage> {
             child: Column(
               children: [
                 Container(
-                  height: _authMode == AuthMode.Login
-                      ? size.height * 0.1
-                      : size.height * 0.2,
+                  height: size.height * 0.1,
                   decoration: BoxDecoration(
                     border: Border.all(width: 2, color: Colors.purple),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 0, horizontal: kDefaultPadding),
                   child: TextFormField(
                     decoration: InputDecoration(
                       hintText: 'EMAIL',
@@ -51,7 +50,8 @@ class _LoginPageState extends State<LoginPage> {
                     border: Border.all(width: 2, color: Colors.purple),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 0, horizontal: kDefaultPadding),
                   child: TextFormField(
                     obscureText: true,
                     decoration: InputDecoration(
@@ -63,15 +63,18 @@ class _LoginPageState extends State<LoginPage> {
                   Container(
                     height: size.height * 0.1,
                     margin: EdgeInsets.only(top: 5),
+                    padding: EdgeInsets.only(
+                        left: kDefaultPadding,
+                        right: kDefaultPadding,
+                        top: 0,
+                        bottom: kDefaultPadding),
                     decoration: BoxDecoration(
                       border: Border.all(width: 2, color: Colors.purple),
                       borderRadius: BorderRadius.circular(20),
                     ),
-                    padding: EdgeInsets.all(20),
                     child: TextFormField(
                       enabled: _authMode == AuthMode.Signup,
-                      decoration:
-                          InputDecoration(labelText: 'Confirm Password'),
+                      decoration: InputDecoration(hintText: 'CONFIRM PASSWORD'),
                       obscureText: true,
                     ),
                   ),
@@ -84,9 +87,7 @@ class _LoginPageState extends State<LoginPage> {
           // color: Colors.black,
           margin: EdgeInsets.fromLTRB(
             kDefaultPadding,
-            _authMode == AuthMode.Login
-                ? size.height * 0.6
-                : size.height * 0.78,
+            _authMode == AuthMode.Login ? size.height * 0.6 : size.height * 0.7,
             kDefaultPadding,
             0,
           ),
@@ -103,7 +104,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: size.width * 0.3,
                 child: TextButton(
                   child: Text(
-                    _authMode == AuthMode.Login ? 'Login' : 'Signup',
+                    _authMode == AuthMode.Login ? 'LOGIN' : 'SIGNUP',
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {},
@@ -117,9 +118,7 @@ class _LoginPageState extends State<LoginPage> {
                 width: size.width * 0.3,
                 child: TextButton(
                   child: Text(
-                    _authMode == AuthMode.Login
-                        ? 'Signup Instead'
-                        : 'Login Instead',
+                    _authMode == AuthMode.Login ? 'SIGN UP' : 'SIGN IN',
                     style: TextStyle(color: Colors.white),
                   ),
                   onPressed: () {
