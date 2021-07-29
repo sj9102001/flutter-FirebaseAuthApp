@@ -15,6 +15,18 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   AuthMode _authMode = AuthMode.Login;
+  final _formKey = GlobalKey<FormState>();
+
+  Map<String, String> _authData = {'email': '', 'password': ''};
+
+  void _authenticate() {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    _formKey.currentState!.save();
+    print('${_authData['email']}');
+    print('${_authData['password']}');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +50,9 @@ class _LoginPageState extends State<LoginPage> {
                   padding: EdgeInsets.symmetric(
                       vertical: 0, horizontal: kDefaultPadding),
                   child: TextFormField(
+                    onSaved: (value) {
+                      _authData['email'] = value.toString();
+                    },
                     decoration: InputDecoration(
                       hintText: 'EMAIL',
                     ),
@@ -54,6 +69,9 @@ class _LoginPageState extends State<LoginPage> {
                       vertical: 0, horizontal: kDefaultPadding),
                   child: TextFormField(
                     obscureText: true,
+                    onSaved: (value) {
+                      _authData['password'] = value.toString();
+                    },
                     decoration: InputDecoration(
                       hintText: 'PASSWORD',
                     ),
