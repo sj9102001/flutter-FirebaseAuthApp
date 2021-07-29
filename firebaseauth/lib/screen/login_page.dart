@@ -17,6 +17,8 @@ class _LoginPageState extends State<LoginPage> {
   AuthMode _authMode = AuthMode.Login;
   final _formKey = GlobalKey<FormState>();
 
+  final _passwordController = TextEditingController();
+
   Map<String, String> _authData = {'email': '', 'password': ''};
 
   void _authenticate() {
@@ -39,6 +41,7 @@ class _LoginPageState extends State<LoginPage> {
           margin: EdgeInsets.fromLTRB(
               kDefaultPadding, size.height * 0.351, kDefaultPadding, 0),
           child: Form(
+            key: _formKey,
             child: Column(
               children: [
                 Container(
@@ -72,6 +75,7 @@ class _LoginPageState extends State<LoginPage> {
                     onSaved: (value) {
                       _authData['password'] = value.toString();
                     },
+                    controller: _passwordController,
                     decoration: InputDecoration(
                       hintText: 'PASSWORD',
                     ),
@@ -92,6 +96,11 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     child: TextFormField(
                       enabled: _authMode == AuthMode.Signup,
+                      validator: (value) {
+                        if (value.toString() != _passwordController.text) {
+                          return 'Password not matching';
+                        }
+                      },
                       decoration: InputDecoration(hintText: 'CONFIRM PASSWORD'),
                       obscureText: true,
                     ),
@@ -125,7 +134,7 @@ class _LoginPageState extends State<LoginPage> {
                     _authMode == AuthMode.Login ? 'LOGIN' : 'SIGNUP',
                     style: TextStyle(color: Colors.white),
                   ),
-                  onPressed: () {},
+                  onPressed: _authenticate,
                 ),
               ),
               Container(
