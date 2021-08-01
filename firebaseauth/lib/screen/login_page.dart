@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../models/auth.dart';
 
 import '../constant.dart';
 import '../widgets/background_image.dart';
@@ -26,8 +29,14 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
     _formKey.currentState!.save();
-    print('${_authData['email']}');
-    print('${_authData['password']}');
+
+    if (_authMode == AuthMode.Login) {
+      //login logic
+    } else {
+      //signup logic
+      Provider.of<Auth>(context, listen: false).signIn(
+          _authData['email'].toString(), _authData['password'].toString());
+    }
   }
 
   @override
@@ -56,6 +65,11 @@ class _LoginPageState extends State<LoginPage> {
                     onSaved: (value) {
                       _authData['email'] = value.toString();
                     },
+                    validator: (value) {
+                      if (value.toString() == '') {
+                        return 'enter email';
+                      }
+                    },
                     decoration: InputDecoration(
                       hintText: 'EMAIL',
                     ),
@@ -74,6 +88,11 @@ class _LoginPageState extends State<LoginPage> {
                     obscureText: true,
                     onSaved: (value) {
                       _authData['password'] = value.toString();
+                    },
+                    validator: (value) {
+                      if (value.toString() == '') {
+                        return 'enter password';
+                      }
                     },
                     controller: _passwordController,
                     decoration: InputDecoration(
