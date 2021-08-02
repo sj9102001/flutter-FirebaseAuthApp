@@ -1,3 +1,4 @@
+import 'package:firebaseauth/models/http_exception.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -22,20 +23,58 @@ class _LoginPageState extends State<LoginPage> {
 
   final _passwordController = TextEditingController();
 
+  Future<void> _showErrorDialog(String message) {
+    print(message);
+    return showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text('Error'),
+        content: Text(message),
+        actions: [
+          FlatButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: Text('Okay'),
+          )
+        ],
+      ),
+    );
+  }
+
   Map<String, String> _authData = {'email': '', 'password': ''};
 
-  void _authenticate() {
+  Future<void> _authenticate() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
     _formKey.currentState!.save();
-
-    if (_authMode == AuthMode.Login) {
-      //login logic
-    } else {
-      //signup logic
-      Provider.of<Auth>(context, listen: false).signIn(
-          _authData['email'].toString(), _authData['password'].toString());
+    try {
+      if (_authMode == AuthMode.Login) {
+        //login logic
+        await Provider.of<Auth>(context, listen: false).signIn(
+            _authData['email'].toString(), _authData['password'].toString());
+      } else {
+        //signup logic
+        await Provider.of<Auth>(context, listen: false).signUp(
+            _authData['email'].toString(), _authData['password'].toString());
+      }
+    } on HttpException catch (error) {
+      var errorMessage = 'Cannot Authenticate';
+      if (error.toString().contains('EMAIL_EXISTS')) {
+        errorMessage = 'This email address already exists';
+      } else if (error.toString().contains('INVALID_EMAIL')) {
+        errorMessage = 'This email address is not valid';
+      } else if (error.toString().contains('WEAK_PASSWORD')) {
+        errorMessage = 'This password is weak';
+      } else if (error.toString().contains('EMAIL_NOT_FOUND')) {
+        errorMessage = 'Could not find user with email';
+      } else if (error.toString().contains('INVALID_PASSWORD')) {
+        errorMessage = 'Invalid password';
+      }
+      _showErrorDialog(errorMessage);
+    } catch (error) {
+      _showErrorDialog('Cannot Authenticate');
     }
   }
 
