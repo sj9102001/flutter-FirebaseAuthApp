@@ -6,9 +6,20 @@ import '../models/http_exception.dart';
 import 'dart:convert';
 
 class Auth with ChangeNotifier {
-  // String _token;
-  // DateTime _expiryTime;
-  // String _userId;
+  String _token = '';
+  DateTime _expiryDate = DateTime.now();
+  String _userId = '';
+
+  bool get isAuth {
+    return token != '';
+  }
+
+  String get token {
+    if (_expiryDate.isAfter(DateTime.now()) && _token != '') {
+      return _token;
+    }
+    return '';
+  }
 
   Future<void> _authenticate(
       String email, String password, String urlSegment) async {
@@ -27,12 +38,24 @@ class Auth with ChangeNotifier {
           },
         ),
       );
-      final responseBody = json.decode(response.body);
-      // print(response.body);
-      if (responseBody['error'] != null) {
+      final responseData = json.decode(response.body);
+      print(responseData);
+      //setting USEFUL VARIABLES
+
+      //ERROR HANDLING
+      if (responseData['error'] != null) {
         print('reaches here');
-        throw HttpException(responseBody['error']['message']);
+        throw HttpException(responseData['error']['message']);
       }
+      _token = responseData['idToken'];
+      _userId = responseData['localId'];
+
+      _expiryDate = DateTime.now().add(
+        Duration(
+          seconds: int.parse(responseData['expiresIn']),
+        ),
+      );
+      notifyListeners();
     } catch (error) {
       print(error);
       throw error;

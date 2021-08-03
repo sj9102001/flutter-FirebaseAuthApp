@@ -1,14 +1,24 @@
 import 'package:flutter/material.dart';
 
-import '../screen/login_page.dart';
+import 'package:provider/provider.dart';
 
-class Body extends StatelessWidget {
+import '../models/auth.dart';
+
+import '../screen/login_page.dart';
+import '../screen/home_screen.dart';
+
+class Body extends StatefulWidget {
+  @override
+  _BodyState createState() => _BodyState();
+}
+
+class _BodyState extends State<Body> {
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
+    final authData = Provider.of<Auth>(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: LoginPage(),
+      body: authData.isAuth ? HomePage() : LoginPage(),
     );
   }
 }
